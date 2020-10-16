@@ -1,0 +1,63 @@
+<html>
+<head><title>Derivation of Power Sums</head>
+<body>
+  <h3>Derivation of Power Sums</h3>
+  <p>Since \( n = \sum_{i=1}^{n} 1 \) we can write that \( n = \sum_{i=1}^{n} i - ( i - 1 ) \)</p>
+  <hr>
+  <ul>
+    <p>\( n = \sum_{i=1}^{n} i - ( i - 1 ) \)</p>
+    <p>\( n = \sum_{i=1}^{n} 1 \)</p>
+    <p>\( n = S_n(0) \)</p>
+    <p>\( S_n(0) = n \)</p>
+  </ul>
+  
+  <hr>
+  <ul>
+    <p>\( n^2 = \sum_{i=1}^{n} i^2 - ( i - 1 )^2 \)</p>
+    <p>\( n^2 = \sum_{i=1}^{n} i^2 - ( i^2 - 2 i + 1 \)</p>
+    <p>\( n^2 = \sum_{i=1}^{n} i^2 - i^2 + 2 i - 1 \)</p>
+    <p>\( n^2 = \sum_{i=1}^{n} 2 i - 1 \)</p>
+    <p>\( n^2 = 2 S_n(1) - S_n(0) \)</p>
+    <p>\( - 2 S_n(1) = - n^2 - S_n(0) \)</p>
+    <p>\( 2 S_n(1) = n^2 + n \)</p>
+    <p>\( S_n(1) = \frac{ n^2 + n }{2} \)</p>
+    <p>\( S_n(1) = \frac{(n)(n+1)}{2} \)</p>
+  </ul>
+  <hr>
+  <ul>
+    <p>\( n^3 = \sum_{i=1}^{n} i^3 - ( i - 1 )^3 \)</p>
+    <p>\( n^3 = \sum_{i=1}^{n} i^3 - ( i^3 - 3 i^2 + 3 i - 1 ) \)</p>
+    <p>\( n^3 = \sum_{i=1}^{n} i^3 - i^3 + 3 i^2 - 3 i + 1 \)</p>
+    <p>\( n^3 = \sum_{i=1}^{n} 3 i^2 - 3 i + 1 \)</p>
+    <p>\( n^3 = 3 S_n(2) - 3 S_n(1) + S_n(0) \)</p>
+    <p>\( -3 S_n(2) = - n^3 - 3 \left ( \frac{(n)(n+1)}{2} \right ) + ( n ) \)</p>
+    <p>\( 3 S_n(2) = n^3 + 3 \left ( \frac{(n)(n+1)}{2} \right ) - ( n ) \)</p>
+    <p>\( 3 S_n(2) = n^3 + \frac{(3)(n)(n+1)}{2} - n \)</p>
+    <p>\( S_n(2) = \frac{ n^3}{3} + \frac{(n)(n+1)}{2} - \frac{n}{3} \)</p>
+    <p>\( S_n(2) = \frac{ n^3}{3} + \frac{n^2+n}{2} - \frac{n}{3} \)</p>
+    <p>\( S_n(2) = \frac{ 2 n^3}{6} + \frac{3 n^2+3 n}{6} - \frac{2 n}{6} \)</p>
+    <p>\( S_n(2) = \frac{ 2 n^3 + 3 n^2 + 3 n - 2 n}{6} \)</p>
+    <p>\( S_n(2) = \frac{ 2 n^3 + 3 n^2 + n}{6} \)</p>
+  </ul>
+  
+  <hr>
+  <ul>
+    <p>\( n^4 = \sum_{i=1}^{n} i^4 - ( i - 1 )^4 \)</p>
+    <p>\( n^4 = \sum_{i=1}^{n} i^4 - ( i^4 - 4 i^3 + 6 i^2-4 i+1) \)</p>
+    <p>\( n^4 = \sum_{i=1}^{n} i^4 - i^4 + 4 i^3 - 6 i^2 + 4 i - 1 \)</p>
+    <p>\( n^4 = \sum_{i=1}^{n} 4 i^3 - 6 i^2 + 4 i - 1 \)</p>
+    <p>\( n^4 = 4 S_n(3) - 6 S_n(2) + 4 S_n(1) - S_n(0) \)</p>
+    <p>\( - 4 S_n(3) = - n^4 - 6 \left ( \frac{ 2 n^3 + 3 n^2 + n}{6} \right ) + 4 \left ( \frac{(n)(n+1)}{2} \right ) - ( n )\)</p>
+    <p>\( - 4 S_n(3) = - n^4 - ( 2 n^3 + 3 n^2 + n ) + 2( (n)(n+1) ) - n \)</p>
+    <p>\( - 4 S_n(3) = - n^4 -  2 n^3 - 3 n^2 - n   + 2( n^2 + n  ) - n \)</p>
+    <p>\( - 4 S_n(3) = - n^4 -  2 n^3 - 3 n^2 - n   + 2 n^2 + 2 n - n \)</p>
+    <p>\( 4 S_n(3) = n^4 + 2 n^3 + 3 n^2 + n   - 2 n^2 -  2 n + n \)</p>
+    <p>\( 4 S_n(3) = n^4 + 2 n^3 + n^2   \)</p>
+    <p>\( 4 S_n(3) = n^2 (n^2 + 2 n + 1)   \)</p>
+    <p>\( 4 S_n(3) = n^2 (n+1)^2   \)</p>
+    <p>\( S_n(3) = \frac{ n^2 (n+1)^2}{4}  \)</p>
+  </ul>
+    <hr>
+</body>
+</html>
+

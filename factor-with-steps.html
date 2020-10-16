@@ -1,0 +1,245 @@
+<html>
+<head><title>Factoring Trinomials - By: Mr. Pellegrino</title>
+  <script>
+
+    var global_dbg=1;
+
+
+    function LaTeX_footer()
+    {
+	var x='';
+	x+='\\end{document}\n';
+	return x;
+    }
+    
+    function LaTeX_header()
+    {
+	var x='';
+	x+='\\documentclass[11pt]{article}\n';
+	x+='\\usepackage{amsmath}\n';
+	
+	x+='\\usepackage{geometry}\n';
+	x+='\\geometry{letterpaper, portrait, margin=0.75in}\n';
+	x+='\\usepackage{multicol}\n';
+	x+='\\usepackage{tikz}\n';
+	x+='\\usepackage{graphicx}\n';
+	x+='\\usepackage{amssymb}\n';
+	x+='\\begin{document}\n';
+	return x;
+    }
+
+    function dbg(i)
+    {
+	if( global_dbg == 1 )
+	{
+	    alert( "DEBUG MESSAGE: " + i );
+	}
+    }
+
+    function gcd(x, y) {
+	if ((typeof x !== 'number') || (typeof y !== 'number')) 
+	    return false;
+	x = Math.abs(x);
+	y = Math.abs(y);
+	while(y) {
+	    var t = y;
+	    y = x % y;
+	    x = t;
+	}
+	return x;
+    }
+
+
+
+  
+    
+
+
+
+    function format_trinomial(A,B,C)
+    {
+	var x='';
+	
+	x+='\\( ';
+	if( A == -1 ){x+='-';}
+	else if( A != 1 ){x+=A;}
+	x+='x^{2} ';
+	if( B != 0)
+	{
+	    if( B < 0 ){x+='-';}
+	    else{x+='+';}
+	    if( Math.sqrt(B*B) != 1 )
+	    {x+=Math.sqrt(B*B);}
+	    x+='x ';
+	}
+
+	if( C < 0 ){x+='-';}
+	else{x+='+';}
+	x+=Math.sqrt(C*C) + ' \\)';
+	return x;
+    }
+
+    function factor()
+    {
+	var x='';
+
+	x+=LaTeX_header();
+
+
+	var A=form1.A.value;
+	var B=form1.B.value;
+	var C=form1.C.value;
+
+	if( B*B-4*A*C < 0 )
+	{
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Not factorable\n';
+	}
+	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
+	{
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': is factorable\n';
+	    x+='\\par{} \\noindent Using the Quadratic Formula:\n';
+	    x+='\\begin{enumerate}\n';
+	    var S1=gcd(1*A,1*B);
+	    var S=gcd(1*S1,1*C);
+	    if( S !=1 )
+	    {
+		x+='\\item Factor out GCF: \\(' + S + '\\) and save it for later!\n';
+
+	    }
+	    A=A/S;
+	    B=B/S;
+	    C=C/S;
+	    
+	    x+='\\item \\( x = \\frac{-(B)\\pm\\sqrt{(B)^{2}-4(A)(C)}}{2(A)}\\)\n';
+	    x+='\\par{} \\( A = ' + A + ' \\ \\ \\ B = ' + B + ' \\ \\ \\ C = ' + C + '\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm\\sqrt{(' + B + ' )^{2}-4(' + A + ')(' + C + ')}}{2(' + A + ')}\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm\\sqrt{(' + B + ' )^{2}-4(' + A*C + ')}}{2(' + A + ')}\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm\\sqrt{(' + B + ' )^{2}-(' + 4*A*C + ')}}{2(' + A + ')}\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm\\sqrt{' + B*B + ' - (' + 4*A*C + ')}}{2(' + A + ')}\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm\\sqrt{' + ((B*B)+(-4*A*C)) + '}}{2(' + A + ')}\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm ' + Math.sqrt(B*B-4*A*C) + '}{2(' + A + ')}\\)\n';
+	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm ' + Math.sqrt(B*B-4*A*C) + '}{' + 2*A + '}\\)\n';
+	    x+='\\item \\( x = \\frac{' + (-1*B) + ' \\pm ' + Math.sqrt(B*B-4*A*C) + '}{' + 2*A + '}\\)\n';
+	    x+='\\item \\( x = \\frac{' + (-1*B) + ' + ' + Math.sqrt(B*B-4*A*C) + '}{' + 2*A + '}\\ \\ \\ \\ \\ \\ x = \\frac{' + (-1*B) + ' - ' + Math.sqrt(B*B-4*A*C) + '}{' + 2*A + '}\\)\n';
+	    x+='\\item \\( x = \\frac{' + ((-1*B) + Math.sqrt(B*B-4*A*C)) + '}{' + 2*A + '}\\ \\ \\ \\ \\ \\ x = \\frac{' + ((-1*B)- Math.sqrt(B*B-4*A*C)) + '}{' + 2*A + '}\\)\n';
+
+	    var N1=((-1*B) + Math.sqrt(B*B-4*A*C));
+	    var N2=((-1*B) - Math.sqrt(B*B-4*A*C));
+	    var D=2*A;
+
+	    N1t=N1;
+	    N2t=N2;
+	    N1=N1/gcd(N1,D);
+	    N2=N2/gcd(N2,D);
+	    
+	    D1=D/gcd(D,N1t);
+	    D2=D/gcd(D,N2t);
+
+	    x+='\\item \\( x = \\frac{' + N1 + '}{' + D1 + '}\\ \\ \\ \\ \\ \\ x = \\frac{' + N2 + '}{' + D2 + '}\\)\n';
+
+	    if( D1<0 )
+	    {
+		N1=-1*N1;
+		D1=-1*D1;
+	    }
+	    if( D2<0 )
+	    {
+		N2=-1*N2;
+		D2=-1*D2;
+	    }
+
+	    if( D1==1 )
+	    {
+		x+='\\item \\( x = ' + N1 + ' \\ \\ \\ \\ \\ \\ ';
+	    }
+	    else
+	    {
+		x+='\\item \\( ' + D1 + 'x = ' + N1 + ' \\ \\ \\ \\ \\ \\ ';
+	    }
+	    if( D2==1 )
+	    {
+		x+='x = ' + N2 + '\\)\n';
+	    }
+	    else
+	    {
+		x+=D2 + 'x = ' + N2 + '\\)\n';
+	    }
+
+	    /* ---------------- */
+
+	    var N2S='-';
+	    var N1S='-';
+	    var F1='';
+	    var F2='';
+	    
+	    if( D1==1 )
+	    {
+		if( N1<0 ) N1S= '+';
+		F1='(x ' + N1S + Math.abs(N1) + ')';
+		x+='\\item \\( (x ' + N1S + Math.abs(N1) + ') = 0 \\ \\ \\ \\ \\ \\ ';
+	    }
+	    else
+	    {
+		if( N1<0 ) N1S= '+';
+		F1='(' + D1 + 'x ' + N1S + Math.abs(N1) + ')';
+		x+='\\item \\( (' + D1 + 'x ' + N1S + Math.abs(N1) + ') =0  \\ \\ \\ \\ \\ \\ ';
+	    }
+
+	    var N2S='-';
+	    var N1S='-';
+	    
+	    if( D2==1 )
+	    {
+		if( N2<0 ) N2S='-';
+		F2='(x ' + N2S + N2 + ')';
+		x+='(x ' + N2S + N2 + ') = 0  \\)\n';
+	    }
+	    else
+	    {
+		if( N2<0 ) N2S='-';
+		F2='( ' + D2 + 'x ' + N2S + N2 + ' )';
+		x+='( ' + D2 + 'x ' + N2S + N2 + ' ) = 0 \\)\n';
+	    }
+
+	    if( S != 1 )
+	    {
+		x+='\\item \\(' + S + F1 + F2 + ' \\ \\ \\ \\ \\  \\leftarrow \\) Contains the GCF from Step 1\n';
+	    }
+	    else
+	    {
+		x+='\\item \\(' + F1 + F2 + '\\)\n';
+	    }
+	    
+	    
+	    x+='\\end{enumerate}\n';
+	}
+	else
+	{
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors do not contain rational numbers.\n';
+	}
+
+	
+
+	x+=LaTeX_footer();
+	form1.text_area.value=x;
+    }
+
+
+
+</script>
+</head>
+
+<body>
+  <form name='form1' action='' method='GET'>
+
+    <p>A:<input type='text' id='A' name='A' size=1>&nbsp;&nbsp;&nbsp;B:<input type='text' id='B' name='B' size=1>&nbsp;&nbsp;&nbsp;C:<input type='text' id='C' name='C' size=1></p>
+    <p><input type='button' onClick="javascript:factor();" value='Factor'></p>
+    <p>This is the LaTeX:</p>
+    <p><textarea cols=80 rows=20 name='text_area'></textarea></p>
+  </form>
+  <hr>
+  <p><center><font size=-2><i>Coded By: Mr. Pellegrino - Last Updated on: 2020 10 15</i></font></center></p>
+  
+</body>
+</html>
+
