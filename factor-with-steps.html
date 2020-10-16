@@ -15,15 +15,11 @@
     function LaTeX_header()
     {
 	var x='';
-	x+='\\documentclass[11pt]{article}\n';
-	x+='\\usepackage{amsmath}\n';
+	x+='\\documentclass[12pt]{article}\n';
 	
 	x+='\\usepackage{geometry}\n';
 	x+='\\geometry{letterpaper, portrait, margin=0.75in}\n';
 	x+='\\usepackage{multicol}\n';
-	x+='\\usepackage{tikz}\n';
-	x+='\\usepackage{graphicx}\n';
-	x+='\\usepackage{amssymb}\n';
 	x+='\\begin{document}\n';
 	return x;
     }
@@ -86,18 +82,20 @@
 	var A=form1.A.value;
 	var B=form1.B.value;
 	var C=form1.C.value;
-
+	x+='\\section*{Factor Using the Quadratic Formula}\n';
+	
 	if( B*B-4*A*C < 0 )
 	{
 	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Not factorable\n';
 	}
 	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
 	{
-	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': is factorable\n';
-	    x+='\\par{} \\noindent Using the Quadratic Formula:\n';
+
+	    x+='\\par{} \\noindent \\textbf{' + format_trinomial(A,B,C) +  ': is factorable using the Quadratic Formula.}\n';
 	    x+='\\begin{enumerate}\n';
 	    var S1=gcd(1*A,1*B);
 	    var S=gcd(1*S1,1*C);
+	    if( A<0 ) S=-1*S;
 	    if( S !=1 )
 	    {
 		x+='\\item Factor out GCF: \\(' + S + '\\) and save it for later!\n';
@@ -215,6 +213,218 @@
 	
     }
 
+    function factor_using_grouping()
+    {
+	var x='';
+
+	var A=form1.A.value;
+	var B=form1.B.value;
+	var C=form1.C.value;
+	x+='\\section*{Factor By Grouping}\n';
+	
+	if( B*B-4*A*C < 0 )
+	{
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Not factorable by Grouping\n';
+	    return x;
+	}
+	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
+	{
+	    x+='\\par \\noindent \\textbf{' + format_trinomial(A,B,C) +  ': is factorable by grouping.}\n';
+	    x+='\\begin{enumerate}\n';
+	    var S1=gcd(1*A,1*B);
+	    var S=gcd(1*S1,1*C);
+	    if( A < 0 ) S=-1*S;
+	    if( S !=1 )
+	    {
+		x+='\\item Factor out GCF: \\(' + S + '\\) and save it for later!\n';
+
+	    }
+	    A=A/S;
+	    B=B/S;
+	    C=C/S;
+	    var B_sign='+';
+	    var C_sign='+';
+
+	    x+='\\item[] ' + format_trinomial(A,B,C) + '\n';
+
+	    var AC=A*C;
+	    x+='\\item Multiply 1st and 3rd terms: \\(' + A + 'x^2 \\times ' + C + ' = ' + AC + 'x^2 \\)\n';
+	    x+='\\item Find 2 numbers that have a product of \\( ' + AC + ' x^2 \\) and a sum of \\( ' + B + 'x \\) (the 2nd term in the expression)\n';
+	    
+	    var N1=(B+Math.sqrt(B*B-4*AC))/2;
+	    var N2=(B-Math.sqrt(B*B-4*AC))/2;
+
+	    var N1S = '+';
+	    var N2S = '+';
+
+	    var CS = '+';
+	    if( C < 0 ) CS = '-';
+
+	    if( N1 < 0 ) N1S = '-';
+	    if( N2 < 0 ) N2S = '-';
+
+	    x+='\\item[] The numbers are \\( ' + N1 + 'x \\) and \\( ' + N2 + 'x \\)\n';
+	    x+='\\item Split the middle term into those 2 numbers\n';
+	    x+='\\item[] Rewrite the expression as: \\( ' + A + ' x^{2} ' + N1S + Math.abs(N1) + 'x ' + N2S + Math.abs(N2) + 'x ' + CS + Math.abs(C) + ' \\)\n';
+	    x+='\\item Group the expression as: \\( (' + A + ' x^{2} ' + N1S + Math.abs(N1) + 'x) \\ \\ \\  (' + N2S + Math.abs(N2) + 'x ' + CS + Math.abs(C) + ') \\)\n';
+
+	    var G1 = gcd(A, N1);
+	    var A1 = A/G1;
+	    var B1 = N1/G1;
+	    var B1s = '+';
+	    if( B1<0 ) B1s='-';
+
+	    var G2 = gcd(N2, C);
+	    var A2 = N2/G2;
+	    var B2 = C/G2;
+	    var B2s = '+';
+	    if( B2<0 ) B2s='-';
+
+	    var G2s = '+';
+	    if( G2 < 0 ) G2s = '-';
+
+	    x+='\\item Factor out the GCF from each group (even if it is \\( 1 \\)):\n\\item[] \\( ';
+	    if( G1==-1)
+	    {
+		x+='-';
+	    }
+	    else if( G1!= 1)
+	    {
+		x+=G1;
+	    }
+	    x+=' x ( ';
+	    
+	    if( A1==-1 )
+	    {
+		x+='-';
+	    }
+	    else if( A1!=1 )
+	    {
+		x+=A1;
+	    }
+	    x+='x ' + B1s + Math.abs( B1 ) + ') ' + G2s + Math.abs(G2) + '( ';
+
+	    if( A2 == -1 )
+	    {
+		x+='-';
+	    }
+	    else if( A2!=1 )
+	    {
+		x+= A2;
+	    }
+	    x+= ' x ' + B2s + Math.abs(B2) + ') \\)\n';
+
+	    x+='\\item Factor out the group: \\( ( ';
+	    if( A2 == -1 )
+	    {
+		x+='-';
+	    }
+	    else if( A2!=1 )
+	    {
+		x+= A2;
+	    }
+	    x+= ' x ' + B2s + Math.abs(B2) + ') \\)\n';
+	    
+	    x+='\\item[] \\( ( ';
+	    if( G1==-1)
+	    {
+		x+='-';
+	    }
+	    else if( G1!= 1)
+	    {
+		x+=G1;
+	    }
+	    x+=' x ';
+	    if( G2<0)
+	    {
+		x+='-';
+	    }
+	    else
+	    {
+		x+='+';
+	    }
+	    x+=Math.abs(G2) + ')(';
+	    if( A1==-1)
+	    {
+		x+='-';
+	    }
+	    else if( A1!= 1)
+	    {
+		x+=A1;
+	    }
+	    x+=' x ';
+	    if( B1<0)
+	    {
+		x+='-';
+	    }
+	    else
+	    {
+		x+='+';
+	    }
+	    x+=Math.abs(B1) + ') \\)\n';
+	    
+	    if( Math.abs(S) != 1 )
+	    {
+		x+='\\item Dont forget the GCF from step 1\n\\item[] \\( '
+		if( S == -1 )
+		{
+		    x+='-';
+		}
+		else
+		{
+		    x+=S;
+		}
+	    
+
+		x+='( ';
+		if( G1==-1)
+		{
+		    x+='-';
+		}
+		else if( G1!= 1)
+		{
+		    x+=G1;
+		}
+		x+=' x ';
+		if( G2<0)
+		{
+		    x+='-';
+		}
+		else
+		{
+		    x+='+';
+		}
+		x+=Math.abs(G2) + ')(';
+		if( A1==-1)
+		{
+		    x+='-';
+		}
+		else if( A1!= 1)
+		{
+		    x+=A1;
+		}
+		x+=' x ';
+		if( B1<0)
+		{
+		    x+='-';
+		}
+		else
+		{
+		    x+='+';
+		}
+		x+=Math.abs(B1) + ') \\)\n';
+	    }
+	    
+	    x+='\\end{enumerate}\n';
+	}
+	else
+	{
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors do not contain rational numbers.\n';
+	}
+	return x;
+
+    }
+
     function factor_using_slide_and_divide()
     {
 	var x='';
@@ -222,6 +432,7 @@
 	var A=form1.A.value;
 	var B=form1.B.value;
 	var C=form1.C.value;
+	x+='\\section*{Factor Using Slide and Divide}\n';
 
 	if( B*B-4*A*C < 0 )
 	{
@@ -230,10 +441,11 @@
 	}
 	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
 	{
-	    x+='\\par \\noindent ' + format_trinomial(A,B,C) +  ': is factorable using Slide and Divide\n';
+	    x+='\\par \\noindent \\textbf{' + format_trinomial(A,B,C) +  ': is factorable using Slide and Divide.}\n';
 	    x+='\\begin{enumerate}\n';
 	    var S1=gcd(1*A,1*B);
 	    var S=gcd(1*S1,1*C);
+	    if( A < 0 ) S=-1*S;
 	    if( S !=1 )
 	    {
 		x+='\\item Factor out GCF: \\(' + S + '\\) and save it for later!\n';
@@ -263,7 +475,7 @@
 
 	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1) + '}{ \\ } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2) + '}{ \\ }  \\right ) \\) (Numbers that Add up to ' + B + ' and multiply to ' + AC + ')\n';
 
-	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1) + '}{ ' + A + ' } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2) + '}{ ' + A + ' }  \\right ) \\) (Replace the number you \textit{Slid})\n';
+	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1) + '}{ ' + A + ' } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2) + '}{ ' + A + ' }  \\right ) \\) (Replace the number you \\textit{Slid})\n';
 
 	    var G1=gcd(N1,A);
 	    var G2=gcd(N2,A);
@@ -322,13 +534,31 @@
     {
 	var x='';
 
-	x+=LaTeX_header();
-
-	x+=factor_using_slide_and_divide();
-	//x+=factor_using_quadratic_formula();
-
-	x+=LaTeX_footer();
-	form1.text_area.value=x;
+	if( !form1.sd.checked && !form1.gp.checked && !form1.qf.checked )
+	{
+	    alert( "No Factoring Method Selected! Please Choose one!" );
+	}
+	else
+	{
+	    
+	    x+=LaTeX_header();
+	    if( form1.gp.checked )
+	    {
+		x+=factor_using_grouping();
+		x+='\\newpage\n';
+	    }
+	    if( form1.sd.checked )
+	    {
+		x+=factor_using_slide_and_divide();
+		x+='\\newpage\n';
+	    }
+	    if( form1.qf.checked )
+	    {
+		x+=factor_using_quadratic_formula();
+	    }
+	    x+=LaTeX_footer();
+	    form1.text_area.value=x;
+	}
     }
 
 
@@ -340,6 +570,11 @@
   <form name='form1' action='' method='GET'>
 
     <p>A:<input type='text' id='A' name='A' size=1>&nbsp;&nbsp;&nbsp;B:<input type='text' id='B' name='B' size=1>&nbsp;&nbsp;&nbsp;C:<input type='text' id='C' name='C' size=1></p>
+    <ul>
+      <li><input type="checkbox" id="sd" checked> &nbsp;Slide and Divide</li>
+      <li><input type="checkbox" id="gp" checked> &nbsp;Grouping</li>
+      <li><input type="checkbox" id="qf" checked> &nbsp;Quadratic Formula</li>
+    </ul>
     <p><input type='button' onClick="javascript:factor();" value='Factor'></p>
     <p>This is the LaTeX:</p>
     <p><textarea cols=80 rows=20 name='text_area'></textarea></p>
