@@ -46,32 +46,17 @@
     }
 
 
-
-  
-    
-
-
-
     function format_trinomial(A,B,C)
     {
 	var x='';
-	
-	x+='\\( ';
-	if( A == -1 ){x+='-';}
-	else if( A != 1 ){x+=A;}
-	x+='x^{2} ';
-	if( B != 0)
-	{
-	    if( B < 0 ){x+='-';}
-	    else{x+='+';}
-	    if( Math.sqrt(B*B) != 1 )
-	    {x+=Math.sqrt(B*B);}
-	    x+='x ';
-	}
 
-	if( C < 0 ){x+='-';}
-	else{x+='+';}
-	x+=Math.sqrt(C*C) + ' \\)';
+	x+='\\( ';
+	if( A!=0 ) x+=pretty_no_plus(A) + 'x^{2} ';
+	if( B!=0 ) x+=pretty(B) + 'x ';
+	if( C!=0 ) x+=pretty_constant(C);
+	x+=' \\)';
+	
+	
 	return x;
     }
 
@@ -83,15 +68,16 @@
 	var B=form1.B.value;
 	var C=form1.C.value;
 	x+='\\section*{Factor Using the Quadratic Formula}\n';
-	
+
 	if( B*B-4*A*C < 0 )
 	{
-	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Not factorable\n';
+	    x+='\\par{} \\noindent Discriminant: \\(' + pretty_constant(B*B-4*A*C) + '\\)\n';
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Not factorable using the Quadratic Formula\n';
 	}
 	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
 	{
 
-	    x+='\\par{} \\noindent \\textbf{' + format_trinomial(A,B,C) +  ': is factorable using the Quadratic Formula.}\n';
+	    x+='\\par{} \\noindent \\textbf{' + format_trinomial(A,B,C) +  '}\n';
 	    x+='\\begin{enumerate}\n';
 	    var S1=gcd(1*A,1*B);
 	    var S=gcd(1*S1,1*C);
@@ -99,12 +85,13 @@
 	    if( S !=1 )
 	    {
 		x+='\\item Factor out GCF: \\(' + S + '\\) and save it for later!\n';
-
 	    }
 	    A=A/S;
 	    B=B/S;
 	    C=C/S;
-	    
+
+	    if( S!=1 ) x+='\\item[] ' + format_trinomial(A,B,C) + '\n';
+
 	    x+='\\item \\( x = \\frac{-(B)\\pm\\sqrt{(B)^{2}-4(A)(C)}}{2(A)}\\)\n';
 	    x+='\\par{} \\( A = ' + A + ' \\ \\ \\ B = ' + B + ' \\ \\ \\ C = ' + C + '\\)\n';
 	    x+='\\item \\( x = \\frac{-(' + B + ') \\pm\\sqrt{(' + B + ' )^{2}-4(' + A + ')(' + C + ')}}{2(' + A + ')}\\)\n';
@@ -143,76 +130,78 @@
 		D2=-1*D2;
 	    }
 
-	    if( D1==1 )
-	    {
-		x+='\\item \\( x = ' + N1 + ' \\ \\ \\ \\ \\ \\ ';
-	    }
-	    else
-	    {
-		x+='\\item \\( ' + D1 + 'x = ' + N1 + ' \\ \\ \\ \\ \\ \\ ';
-	    }
-	    if( D2==1 )
-	    {
-		x+='x = ' + N2 + '\\)\n';
-	    }
-	    else
-	    {
-		x+=D2 + 'x = ' + N2 + '\\)\n';
-	    }
+	    x+='\\item \\( ' + pretty_no_plus(D1) + 'x = ' + N1 + ' \\ \\ \\ \\ \\ \\ ' + pretty_no_plus(D2) + 'x = ' + N2 + '\\)\n';
 
 	    /* ---------------- */
 
-	    var N2S='-';
-	    var N1S='-';
 	    var F1='';
 	    var F2='';
-	    
-	    if( D1==1 )
-	    {
-		if( N1<0 ) N1S= '+';
-		F1='(x ' + N1S + Math.abs(N1) + ')';
-		x+='\\item \\( (x ' + N1S + Math.abs(N1) + ') = 0 \\ \\ \\ \\ \\ \\ ';
-	    }
-	    else
-	    {
-		if( N1<0 ) N1S= '+';
-		F1='(' + D1 + 'x ' + N1S + Math.abs(N1) + ')';
-		x+='\\item \\( (' + D1 + 'x ' + N1S + Math.abs(N1) + ') =0  \\ \\ \\ \\ \\ \\ ';
-	    }
 
-	    if( D2==1 )
-	    {
-		if( N2<0 ) N2S='+';
-		F2='(x ' + N2S + Math.abs(N2) + ')';
-		x+='(x ' + N2S + Math.abs(N2) + ') = 0  \\)\n';
-	    }
-	    else
-	    {
-		if( N2<0 ) N2S='+';
-		F2='( ' + D2 + 'x ' + N2S + Math.abs(N2) + ' )';
-		x+='( ' + D2 + 'x ' + N2S + Math.abs(N2) + ' ) = 0 \\)\n';
-	    }
+	    N1=N1*(-1);
+	    N2=N2*(-1);
+	    F1='( ' + pretty_no_plus(D1) + 'x ' + pretty_constant(N1) + ' )';
+	    F2='( ' + pretty_no_plus(D2) + 'x ' + pretty_constant(N2) + ' )';
+	    x+='\\item \\( ' + F1 + ' =0  \\ \\ \\ \\ \\ \\ ' + F2 + ' = 0 \\)\n';
 
-	    if( S != 1 )
-	    {
-		x+='\\item \\(' + S + F1 + F2 + ' \\ \\ \\ \\ \\  \\leftarrow \\) Contains the GCF from Step 1\n';
-	    }
-	    else
-	    {
-		x+='\\item \\(' + F1 + F2 + '\\)\n';
-	    }
-	    
-	    
-	    x+='\\end{enumerate}\n';
+	    x+='\\item \\(' + pretty_no_plus(S) + F1 + F2 + ' \\)';
+	    if( S!=1 )x+='\\( \\ \\ \\ \\ \\ \\leftarrow \\) Contains the GCF from Step 1';
+		
+	    x+='\n\\end{enumerate}\n';
 	}
 	else
 	{
-	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors do not contain rational numbers.\n';
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors contain irrational numbers.\n';
 	}
 	return x;
 	
     }
 
+    function getSign( N )
+    {
+	var retVal = '+';
+	if( N < 0 ) retVal='-';
+	return retVal;
+    }
+    
+    function pretty( N )
+    {
+	// if N == 1, this returns nothing
+	// if N == -1, this returns -
+	// returns the sign with N: -5, +3, +92
+	var retVal = '';
+	retVal+=getSign(N);
+	if( Math.abs(N) != 1 ) retVal+=Math.abs(N);
+	return retVal;
+    }
+
+    function pretty_no_plus( N )
+    {
+	var retVal = '';
+	if( N == -1 )
+	{
+	    retVal+='-';
+	}
+	else if( N != 1 )
+	{
+	    retVal+=N;
+	}
+	return retVal;
+    }
+
+    function pretty_constant( N )
+    {
+	var retVal = '';
+	if( N > 0 )
+	{
+	    retVal+='+' + N;
+	}
+	if( N < 0 )
+	{
+	    retVal+=N;
+	}
+	return retVal;
+    }
+    
     function factor_using_grouping()
     {
 	var x='';
@@ -229,7 +218,7 @@
 	}
 	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
 	{
-	    x+='\\par \\noindent \\textbf{' + format_trinomial(A,B,C) +  ': is factorable by grouping.}\n';
+	    x+='\\par \\noindent \\textbf{' + format_trinomial(A,B,C) +  '}\n';
 	    x+='\\begin{enumerate}\n';
 	    var S1=gcd(1*A,1*B);
 	    var S=gcd(1*S1,1*C);
@@ -245,11 +234,11 @@
 	    var B_sign='+';
 	    var C_sign='+';
 
-	    x+='\\item[] ' + format_trinomial(A,B,C) + '\n';
+	    if( S!=1 ) x+='\\item[] ' + format_trinomial(A,B,C) + '\n';
 
 	    var AC=A*C;
-	    x+='\\item Multiply 1st and 3rd terms: \\(' + A + 'x^2 \\times ' + C + ' = ' + AC + 'x^2 \\)\n';
-	    x+='\\item Find 2 numbers that have a product of \\( ' + AC + ' x^2 \\) and a sum of \\( ' + B + 'x \\) (the 2nd term in the expression)\n';
+	    x+='\\item Multiply 1st and 3rd terms: \\(' + pretty_no_plus(A) + 'x^2 \\times ' + C + ' = ' + pretty_no_plus(AC) + 'x^2 \\)\n';
+	    x+='\\item Find 2 numbers that multiply to \\( ' + pretty_no_plus(AC) + ' x^2 \\) and add up to \\( ' + pretty_no_plus(B) + 'x \\) (the 2nd term in the expression)\n';
 	    
 	    var N1=(B+Math.sqrt(B*B-4*AC))/2;
 	    var N2=(B-Math.sqrt(B*B-4*AC))/2;
@@ -263,11 +252,10 @@
 	    if( N1 < 0 ) N1S = '-';
 	    if( N2 < 0 ) N2S = '-';
 
-	    x+='\\item[] The numbers are \\( ' + N1 + 'x \\) and \\( ' + N2 + 'x \\)\n';
-	    x+='\\item Split the middle term into those 2 numbers\n';
-	    x+='\\item[] Rewrite the expression as: \\( ' + A + ' x^{2} ' + N1S + Math.abs(N1) + 'x ' + N2S + Math.abs(N2) + 'x ' + CS + Math.abs(C) + ' \\)\n';
-	    x+='\\item Group the expression as: \\( (' + A + ' x^{2} ' + N1S + Math.abs(N1) + 'x) \\ \\ \\  (' + N2S + Math.abs(N2) + 'x ' + CS + Math.abs(C) + ') \\)\n';
-
+	    x+='\\item[] The numbers are \\( ' + pretty_no_plus(N1) + 'x \\) and \\( ' + pretty_no_plus(N2) + 'x \\)\n';
+	    x+='\\item Split the 2nd term into those 2 numbers\n';
+	    x+='\\item[] Rewrite the expression as: \\( ' + pretty_no_plus(A) + ' x^{2} ' + pretty(N1) + 'x ' +pretty(N2) + 'x ' + pretty_constant(C) + ' \\)\n';
+	    x+='\\item Group the expression as: \\( (' + pretty_no_plus( A ) + 'x^{2} ' + pretty(N1) + 'x) \\ \\ \\  (' + pretty_no_plus(N2) + 'x ' + pretty_constant(C) + ') \\)\n';
 	    var G1 = gcd(A, N1);
 	    var A1 = A/G1;
 	    var B1 = N1/G1;
@@ -276,6 +264,11 @@
 
 	    var G2 = gcd(N2, C);
 	    var A2 = N2/G2;
+	    if( A2 < 0 )
+	    {
+		A2=-1*A2;
+		G2=-1*G2;
+	    }
 	    var B2 = C/G2;
 	    var B2s = '+';
 	    if( B2<0 ) B2s='-';
@@ -283,143 +276,24 @@
 	    var G2s = '+';
 	    if( G2 < 0 ) G2s = '-';
 
-	    x+='\\item Factor out the GCF from each group (even if it is \\( 1 \\)):\n\\item[] \\( ';
-	    if( G1==-1)
-	    {
-		x+='-';
-	    }
-	    else if( G1!= 1)
-	    {
-		x+=G1;
-	    }
-	    x+=' x ( ';
-	    
-	    if( A1==-1 )
-	    {
-		x+='-';
-	    }
-	    else if( A1!=1 )
-	    {
-		x+=A1;
-	    }
-	    x+='x ' + B1s + Math.abs( B1 ) + ') ' + G2s + Math.abs(G2) + '( ';
+	    x+='\\item Factor out the GCF from each group (even if it is \\( 1 \\)):\n';
+	    x+='\\item[] \\( ' + pretty_no_plus(G1) + ' x ( ' + pretty_no_plus(A1) + ' x' + pretty_constant(B1) + ')' + pretty_constant(G2) + '( ' + pretty_no_plus(A2) + 'x ' + pretty_constant(B2) + ') \\)\n';
 
-	    if( A2 == -1 )
-	    {
-		x+='-';
-	    }
-	    else if( A2!=1 )
-	    {
-		x+= A2;
-	    }
-	    x+= ' x ' + B2s + Math.abs(B2) + ') \\)\n';
+	    x+='\\item Factor out the group: \\( ( ' + pretty_no_plus(A2) + 'x ' + pretty_constant(B2) + ') \\)\n';
 
-	    x+='\\item Factor out the group: \\( ( ';
-	    if( A2 == -1 )
-	    {
-		x+='-';
-	    }
-	    else if( A2!=1 )
-	    {
-		x+= A2;
-	    }
-	    x+= ' x ' + B2s + Math.abs(B2) + ') \\)\n';
+	    var tmp = '( ' + pretty_no_plus(G1) +'x ' + pretty_constant(G2) + ')(' + pretty_no_plus(A1) + 'x ' + pretty_constant(B1) + ') \\)\n';
+	    x+='\\item[] \\( ' + tmp;
 	    
-	    x+='\\item[] \\( ( ';
-	    if( G1==-1)
+	    if( S != 1)
 	    {
-		x+='-';
-	    }
-	    else if( G1!= 1)
-	    {
-		x+=G1;
-	    }
-	    x+=' x ';
-	    if( G2<0)
-	    {
-		x+='-';
-	    }
-	    else
-	    {
-		x+='+';
-	    }
-	    x+=Math.abs(G2) + ')(';
-	    if( A1==-1)
-	    {
-		x+='-';
-	    }
-	    else if( A1!= 1)
-	    {
-		x+=A1;
-	    }
-	    x+=' x ';
-	    if( B1<0)
-	    {
-		x+='-';
-	    }
-	    else
-	    {
-		x+='+';
-	    }
-	    x+=Math.abs(B1) + ') \\)\n';
-	    
-	    if( Math.abs(S) != 1 )
-	    {
-		x+='\\item Dont forget the GCF from step 1\n\\item[] \\( '
-		if( S == -1 )
-		{
-		    x+='-';
-		}
-		else
-		{
-		    x+=S;
-		}
-	    
-
-		x+='( ';
-		if( G1==-1)
-		{
-		    x+='-';
-		}
-		else if( G1!= 1)
-		{
-		    x+=G1;
-		}
-		x+=' x ';
-		if( G2<0)
-		{
-		    x+='-';
-		}
-		else
-		{
-		    x+='+';
-		}
-		x+=Math.abs(G2) + ')(';
-		if( A1==-1)
-		{
-		    x+='-';
-		}
-		else if( A1!= 1)
-		{
-		    x+=A1;
-		}
-		x+=' x ';
-		if( B1<0)
-		{
-		    x+='-';
-		}
-		else
-		{
-		    x+='+';
-		}
-		x+=Math.abs(B1) + ') \\)\n';
+		x+='\\item Dont forget the GCF from step 1\n\\item[] \\( ' + pretty_no_plus(S) + tmp;
 	    }
 	    
 	    x+='\\end{enumerate}\n';
 	}
 	else
 	{
-	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors do not contain rational numbers.\n';
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors contain irrational numbers.\n';
 	}
 	return x;
 
@@ -441,7 +315,7 @@
 	}
 	else if( Math.sqrt(B*B-4*A*C) == Math.floor( Math.sqrt(B*B-4*A*C) ) )
 	{
-	    x+='\\par \\noindent \\textbf{' + format_trinomial(A,B,C) +  ': is factorable using Slide and Divide.}\n';
+	    x+='\\par \\noindent \\textbf{' + format_trinomial(A,B,C) +  '}\n';
 	    x+='\\begin{enumerate}\n';
 	    var S1=gcd(1*A,1*B);
 	    var S=gcd(1*S1,1*C);
@@ -454,13 +328,13 @@
 	    A=A/S;
 	    B=B/S;
 	    C=C/S;
-	    var B_sign='+';
-	    var C_sign='+';
+	    //var B_sign='+';
+	    //var C_sign='+';
 
-	    x+='\\item[] ' + format_trinomial(A,B,C) + '\n';
+	    if( S!= 1 ) x+='\\item[] ' + format_trinomial(A,B,C) + '\n';
 
 	    var AC=A*C;
-	    x+='\\item ' + format_trinomial( 1, B, AC ) + ' (Slide first coefficient to the third - multiply them)\n';
+	    x+='\\item ' + format_trinomial( 1, B, AC ) + ' (\\textit{Slide} 1st coefficient to the 3rd - multiply them)\n';
 
 	    x+='\\item \\( ( x \\ \\ \\ \\ \\ \\ \\ )( x \\ \\ \\ \\ \\ \\ \\ )\\) (Set up your factors)\n';
 
@@ -473,7 +347,7 @@
 	    if( N1 < 0 ) N1S = '-';
 	    if( N2 < 0 ) N2S = '-';
 
-	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1) + '}{ \\ } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2) + '}{ \\ }  \\right ) \\) (Numbers that Add up to ' + B + ' and multiply to ' + AC + ')\n';
+	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1) + '}{ \\ } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2) + '}{ \\ }  \\right ) \\) (Numbers that add up to ' + B + ' and multiply to ' + AC + ')\n';
 
 	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1) + '}{ ' + A + ' } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2) + '}{ ' + A + ' }  \\right ) \\) (Replace the number you \\textit{Slid})\n';
 
@@ -485,45 +359,19 @@
 	    var N2a = N2/G2;
 	    var A2 = A/G2;
 	    
-	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1a) + '}{ ' + A1 + ' } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2a) + '}{ ' + A2 + ' }  \\right ) \\) (Reduce Fractions if possible)\n';
+	    x+='\\item \\( \\left ( x ' + N1S + '\\frac{' + Math.abs(N1a) + '}{ ' + A1 + ' } \\right ) \\left ( x ' + N2S + '\\frac{' + Math.abs(N2a) + '}{ ' + A2 + ' }  \\right ) \\) (Reduce fractions \\textit{if possible})\n';
 
 	    var F1='';
 	    var F2='';
-	    if( A1 == 1 )
-	    {
-		F1='( x ' + N1S + Math.abs(N1a) + ')';
-	    }
-	    else
-	    {
-		F1='( ' + A1 + ' x ' + N1S + Math.abs(N1a) + ')';
-	    }
-
-	    if( A2 == 1 )
-	    {
-		F2='( x ' + N2S + Math.abs(N2a) + ')';
-	    }
-	    else
-	    {
-		F2='( ' + A2 + ' x ' + N2S + Math.abs(N2a) + ')';
-	    }
-
-	    if( S==1 )
-	    {
-		x+='\\item \\( ' + F1 + F2 + ' \\) (Slide the denominator to the first term in each group)\n';
-	    }
-	    else if( S== -1)
-	    {
-		x+='\\item \\(-' + F1 + F2 + ' \\) (Slide the denominator to the first term in each group)\n';
-	    }
-	    else
-	    {
-		x+='\\item \\( ' + S + F1 + F2 + '\\) (Slide the denominator to the first term in each group and add in the GCF from Step 1) \n';
-	    }
-	    x+='\\end{enumerate}\n';
+	    F1='( ' + pretty_no_plus(A1) + 'x ' + pretty_constant(N1a) + ')';
+	    F2='( ' + pretty_no_plus(A2) + 'x ' + pretty_constant(N2a) + ')';
+	    x+='\\item \\( ' + pretty_no_plus(S) + F1 + F2 + '\\) (\\textit{Slide} the denominators to the 1st term in each group';
+	    if( S!=1) x+='and add in the GCF from Step 1';
+	    x+=')\n\\end{enumerate}\n';
 	}
 	else
 	{
-	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors do not contain rational numbers.\n';
+	    x+='\\par{} \\noindent ' + format_trinomial(A,B,C) +  ': Factors contain irrational numbers.\n';
 	}
 
 	
@@ -558,10 +406,22 @@
 	    }
 	    x+=LaTeX_footer();
 	    form1.text_area.value=x;
+
+	    copyToClipboard(x);
+	    alert( "LaTeX has been copied to clipboard." );
 	}
     }
 
-
+    function copyToClipboard(text)
+    {
+	var dummy = document.createElement("textarea");
+	document.body.appendChild(dummy);
+	dummy.value = text;
+	dummy.select();
+	document.execCommand("copy");
+	document.body.removeChild(dummy);
+    }
+    
 
 </script>
 </head>
@@ -580,7 +440,7 @@
     <p><textarea cols=80 rows=20 name='text_area'></textarea></p>
   </form>
   <hr>
-  <p><center><font size=-2><i>Coded By: Mr. Pellegrino - Last Updated on: 2020 10 16</i></font></center></p>
+  <p><center><font size=-2><i>Coded By: Mr. Pellegrino - Last Updated on: 2020 10 22</i></font></center></p>
   
 </body>
 </html>
